@@ -1,3 +1,4 @@
 *.json
+*.log
 dev
 __pycache__

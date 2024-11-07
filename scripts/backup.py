@@ -47,10 +47,20 @@ def backup_saved_items(me, is_posts, is_comments):
     for saved_item in me.saved(limit=None):
         if isinstance(saved_item, praw.models.Submission):
             if is_posts:
-                backup["saved_posts"].append(saved_item.id)
-        else:
+                backup["saved_posts"].append({
+                    "id": saved_item.id,
+                    "title": saved_item.title,
+                    "url": saved_item.url,
+                    "selftext": saved_item.selftext
+                })
+        elif isinstance(saved_item, praw.models.Comment):
             if is_comments:
-                backup["saved_comments"].append(saved_item.id)
+                backup["saved_comments"].append({
+                    "id": saved_item.id,
+                    "body": saved_item.body,
+                    "link_id": saved_item.link_id,
+                    "url": f"https://reddit.com{saved_item.permalink}"
+                })
 
     if is_posts:
         print(f"Backed up {len(backup['saved_posts'])} saved posts")
@@ -60,14 +70,24 @@ def backup_saved_items(me, is_posts, is_comments):
 
 def backup_hidden_posts(me):
     for hidden_post in me.hidden(limit=None):
-        backup["hidden_posts"].append(hidden_post.id)
+        backup["hidden_posts"].append({
+            "id": hidden_post.id,
+            "title": hidden_post.title,
+            "url": hidden_post.url,
+            "selftext": hidden_post.selftext
+        })
 
     print(f"Backed up {len(backup['hidden_posts'])} hidden posts")
 
 
 def backup_upvoted_posts(me):
     for upvoted_post in me.upvoted(limit=None):
-        backup["upvoted_posts"].append(upvoted_post.id)
+        backup["upvoted_posts"].append({
+            "id": upvoted_post.id,
+            "title": upvoted_post.title,
+            "url": upvoted_post.url,
+            "selftext": upvoted_post.selftext
+        })
 
     print(f"Backed up {len(backup['upvoted_posts'])} upvoted posts")
 
